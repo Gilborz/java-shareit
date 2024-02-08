@@ -6,10 +6,6 @@ import ru.practicum.shareit.user.model.User;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Data
 public class Item {
     private int id;

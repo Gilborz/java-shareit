@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.exception.ItemAvailableException;
 import ru.practicum.shareit.item.exception.ItemNotFoundToUser;
@@ -10,17 +9,12 @@ import ru.practicum.shareit.user.exception.UserFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @RestController
 @RequestMapping("/items")
 public class ItemController {
 
     private final ItemService itemService;
 
-    @Autowired
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }

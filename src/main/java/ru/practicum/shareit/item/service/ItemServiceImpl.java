@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.exception.ItemAvailableException;
 import ru.practicum.shareit.item.exception.ItemNotFoundToUser;
@@ -15,7 +14,6 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     private final ItemDao itemDao;
 
-    @Autowired
     public ItemServiceImpl(ItemDao itemDao) {
         this.itemDao = itemDao;
     }

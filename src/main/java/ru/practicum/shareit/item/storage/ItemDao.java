@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.exception.ItemNotFoundToUser;
 import ru.practicum.shareit.item.model.Item;
@@ -21,7 +20,6 @@ public class ItemDao {
 
     private final UserDao userDao;
 
-    @Autowired
     public ItemDao(UserDao userDao) {
         this.userDao = userDao;
     }
