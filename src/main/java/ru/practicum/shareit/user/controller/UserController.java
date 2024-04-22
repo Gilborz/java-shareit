@@ -2,7 +2,6 @@ package ru.practicum.shareit.user.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import javax.validation.Valid;
@@ -32,12 +31,12 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
+    public List<User> getAllUsers() {
         return userService.getAllUser();
     }
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable(required = false) int id) {
+    public User getUserById(@PathVariable(required = false) int id) {
         return userService.getUserById(id);
     }
 
