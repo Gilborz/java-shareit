@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.controller;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoBooking;
 import ru.practicum.shareit.item.exception.ItemAvailableException;
 import ru.practicum.shareit.item.exception.ItemNotFoundToUser;
 import ru.practicum.shareit.item.model.Comment;
@@ -38,13 +37,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoBooking getItemById(@RequestHeader(value = "X-Sharer-User-Id") int userId,
-                                      @PathVariable(required = false) int itemId) {
+    public ItemDto getItemById(@RequestHeader(value = "X-Sharer-User-Id") int userId,
+                               @PathVariable(required = false) int itemId) {
         return itemService.getItemById(userId, itemId);
     }
 
     @GetMapping
-    public List<ItemDtoBooking> getAllItemsByUser(@RequestHeader(value = "X-Sharer-User-Id") int userId) {
+    public List<ItemDto> getAllItemsByUser(@RequestHeader(value = "X-Sharer-User-Id") int userId) {
         return itemService.getAllItemsByUser(userId);
     }
 

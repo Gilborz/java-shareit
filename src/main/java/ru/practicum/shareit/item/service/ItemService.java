@@ -91,12 +91,12 @@ public class ItemService {
         }
     }
 
-    public ItemDtoBooking getItemById(int userId, int itemId) {
+    public ItemDto getItemById(int userId, int itemId) {
         validSaveUser(userId);
 
         Item itemBd = itemRepository.findById(itemId).get();
         List<Booking> bookings = bookingRepository.findByItemEqualsOrderByStartAsc(itemBd);
-        ItemDtoBooking itemDtoBooking = ItemMapper.toItemDtoBooking(itemBd);
+        ItemDto itemDtoBooking = ItemMapper.toItemDto(itemBd);
 
         if (itemBd.getOwner().getId() != userId || bookings.size() == 0) {
             itemDtoBooking.setLastBooking(null);
@@ -120,7 +120,7 @@ public class ItemService {
                 log.info("Данные о предмете {} пользователя {} отправлены", itemId, userId);
                 return itemDtoBooking;
             }
-            itemDtoBooking.setLastBooking(BookingMapper.bookingDtoGet(bookings.get(0)));
+            itemDtoBooking.setLastBooking(BookingMapper.toBookingDtoOwner(bookings.get(0)));
             itemDtoBooking.setNextBooking(null);
             itemDtoBooking.setComments(commentRepository.findByItemEquals(itemBd).stream()
                     .map(CommentMapper::toCommentDto)
@@ -148,8 +148,8 @@ public class ItemService {
             }
         }).collect(Collectors.toList());
 
-        itemDtoBooking.setLastBooking(BookingMapper.bookingDtoGet(bookings.get(0)));
-        itemDtoBooking.setNextBooking(BookingMapper.bookingDtoGet(bookings.get(1)));
+        itemDtoBooking.setLastBooking(BookingMapper.toBookingDtoOwner(bookings.get(0)));
+        itemDtoBooking.setNextBooking(BookingMapper.toBookingDtoOwner(bookings.get(1)));
         itemDtoBooking.setComments(commentRepository.findByItemEquals(itemBd).stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList()));
@@ -158,15 +158,15 @@ public class ItemService {
         return itemDtoBooking;
     }
 
-    public List<ItemDtoBooking> getAllItemsByUser(int userId) {
+    public List<ItemDto> getAllItemsByUser(int userId) {
         User user = validSaveUser(userId);
         List<Item> items = itemRepository.findByOwnerEquals(user);
 
-        List<ItemDtoBooking> itemsList = new ArrayList<>();
+        List<ItemDto> itemsList = new ArrayList<>();
 
         for (Item it : items) {
             List<Booking> bookings = bookingRepository.findByItemEqualsOrderByStartAsc(it);
-            ItemDtoBooking itemDtoBooking = ItemMapper.toItemDtoBooking(it);
+            ItemDto itemDtoBooking = ItemMapper.toItemDto(it);
 
             if (bookings.size() == 0 || bookings.size() == 1) {
                 itemDtoBooking.setLastBooking(null);
@@ -176,8 +176,8 @@ public class ItemService {
                         .collect(Collectors.toList()));
                 itemsList.add(itemDtoBooking);
             } else {
-                itemDtoBooking.setLastBooking(BookingMapper.bookingDtoGet(bookings.get(0)));
-                itemDtoBooking.setNextBooking(BookingMapper.bookingDtoGet(bookings.get(1)));
+                itemDtoBooking.setLastBooking(BookingMapper.toBookingDtoOwner(bookings.get(0)));
+                itemDtoBooking.setNextBooking(BookingMapper.toBookingDtoOwner(bookings.get(1)));
                 itemDtoBooking.setComments(commentRepository.findByItemEquals(it).stream()
                         .map(CommentMapper::toCommentDto)
                         .collect(Collectors.toList()));
@@ -186,9 +186,9 @@ public class ItemService {
         }
 
         log.info("Предметы пользователя {} отправлены", userId);
-        return itemsList.stream().sorted(new Comparator<ItemDtoBooking>() {
+        return itemsList.stream().sorted(new Comparator<ItemDto>() {
             @Override
-            public int compare(ItemDtoBooking o1, ItemDtoBooking o2) {
+            public int compare(ItemDto o1, ItemDto o2) {
                 return o1.getId() - o2.getId();
             }
         }).collect(Collectors.toList());

@@ -5,18 +5,18 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.dto.UserMapper;
 
 public class BookingMapper {
-    public static BookingDtoPut toBookingDtoPut(Booking booking) {
-        return new BookingDtoPut(
+    public static BookingDto toBookingDto(Booking booking) {
+        return new BookingDto(
                 booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
                 booking.getStatus(),
                 UserMapper.toUserDto(booking.getBooker()),
-                ItemMapper.toItemDtoForBooking(booking.getItem())
+                ItemMapper.toItemDto(booking.getItem())
         );
     }
 
-    public static BookingDtoOwner bookingDtoGet(Booking booking) {
+    public static BookingDtoOwner toBookingDtoOwner(Booking booking) {
         return new BookingDtoOwner(
                 booking.getId(),
                 booking.getBooker().getId()

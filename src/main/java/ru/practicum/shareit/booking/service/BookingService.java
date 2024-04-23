@@ -3,9 +3,9 @@ package ru.practicum.shareit.booking.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingDtoPost;
 import ru.practicum.shareit.booking.exception.*;
-import ru.practicum.shareit.booking.dto.BookingDtoGet;
-import ru.practicum.shareit.booking.dto.BookingDtoPut;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -36,24 +36,24 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
-    public BookingDtoPut addBooking(Integer userId, BookingDtoGet bookingDtoGet) throws ItemAvailableException, DateTimeException {
+    public BookingDto addBooking(Integer userId, BookingDtoPost bookingDto) throws ItemAvailableException, DateTimeException {
         User user = validSaveUser(userId);
-        Item item = validSaveItemAndAvailable(bookingDtoGet.getItemId(), userId);
-        validTime(bookingDtoGet.getStart(), bookingDtoGet.getEnd());
+        Item item = validSaveItemAndAvailable(bookingDto.getItemId(), userId);
+        validTime(bookingDto.getStart(), bookingDto.getEnd());
 
         Booking booking = new Booking();
         booking.setBooker(user);
         booking.setItem(item);
         booking.setStatus(BookingStatus.WAITING);
-        booking.setStart(bookingDtoGet.getStart());
-        booking.setEnd(bookingDtoGet.getEnd());
+        booking.setStart(bookingDto.getStart());
+        booking.setEnd(bookingDto.getEnd());
         bookingRepository.save(booking);
 
         log.info("Статус с {} добавлен", booking.getId());
-        return BookingMapper.toBookingDtoPut(booking);
+        return BookingMapper.toBookingDto(booking);
     }
 
-    public BookingDtoPut updateBooking(Integer userId, Integer bookingId, Boolean approved) {
+    public BookingDto updateBooking(Integer userId, Integer bookingId, Boolean approved) {
         Booking booking = validSaveBooking(bookingId);
         User user = validSaveUser(userId);
 
@@ -65,7 +65,7 @@ public class BookingService {
 
                 booking.setStatus(BookingStatus.APPROVED);
                 bookingRepository.save(booking);
-                return BookingMapper.toBookingDtoPut(booking);
+                return BookingMapper.toBookingDto(booking);
             } else {
                 if (booking.getStatus().equals(BookingStatus.REJECTED)) {
                     throw new ApprovedException("Статус уже отклонён");
@@ -73,7 +73,7 @@ public class BookingService {
 
                 booking.setStatus(BookingStatus.REJECTED);
                 bookingRepository.save(booking);
-                return BookingMapper.toBookingDtoPut(booking);
+                return BookingMapper.toBookingDto(booking);
             }
         } else if (booking.getBooker().getId() == userId) {
             throw new EntityNotFoundException("Изменять статус может только владелец");
@@ -82,25 +82,25 @@ public class BookingService {
         }
     }
 
-    public BookingDtoPut getBooking(Integer userId, Integer bookingId) {
+    public BookingDto getBooking(Integer userId, Integer bookingId) {
         Booking booking = validSaveBooking(bookingId);
         User user = validSaveUser(userId);
 
         if (userId == booking.getBooker().getId() || userId == booking.getItem().getOwner().getId()) {
-            return BookingMapper.toBookingDtoPut(booking);
+            return BookingMapper.toBookingDto(booking);
         } else {
             throw new UserHaveNotBookingException("Данный запрос не относится к пользователю");
         }
     }
 
-    public List<BookingDtoPut> getAllBookingByBooker(Integer userId, String state) {
+    public List<BookingDto> getAllBookingByBooker(Integer userId, String state) {
         User booker = validSaveUser(userId);
-        List<BookingDtoPut> bookings = new ArrayList<>();
+        List<BookingDto> bookings = new ArrayList<>();
 
         switch (state) {
             case ("CURRENT") :
                 for (Booking bkg : bookingRepository.findByBookerEquals(booker)) {
-                    bookings.add(BookingMapper.toBookingDtoPut(bkg));
+                    bookings.add(BookingMapper.toBookingDto(bkg));
                 }
 
                 return sorted(bookings).stream()
@@ -109,7 +109,7 @@ public class BookingService {
                         .collect(Collectors.toList());
             case ("FUTURE") :
                 for (Booking bkg : bookingRepository.findByBookerEquals(booker)) {
-                    bookings.add(BookingMapper.toBookingDtoPut(bkg));
+                    bookings.add(BookingMapper.toBookingDto(bkg));
                 }
 
                 return sorted(bookings).stream()
@@ -117,19 +117,19 @@ public class BookingService {
                         .collect(Collectors.toList());
             case ("WAITING") :
                 for (Booking bkg : bookingRepository.findByStatusAndBookerEquals(BookingStatus.WAITING, booker)) {
-                    bookings.add(BookingMapper.toBookingDtoPut(bkg));
+                    bookings.add(BookingMapper.toBookingDto(bkg));
                 }
 
                 return sorted(bookings);
             case ("REJECTED") :
                 for (Booking bkg : bookingRepository.findByStatusAndBookerEquals(BookingStatus.REJECTED, booker)) {
-                    bookings.add(BookingMapper.toBookingDtoPut(bkg));
+                    bookings.add(BookingMapper.toBookingDto(bkg));
                 }
 
                 return sorted(bookings);
             case ("PAST") :
                 for (Booking bkg : bookingRepository.findByBookerEquals(booker)) {
-                    bookings.add(BookingMapper.toBookingDtoPut(bkg));
+                    bookings.add(BookingMapper.toBookingDto(bkg));
                 }
 
                 return sorted(bookings).stream()
@@ -137,7 +137,7 @@ public class BookingService {
                         .collect(Collectors.toList());
             case ("ALL") :
                 for (Booking bkg : bookingRepository.findByBookerEquals(booker)) {
-                    bookings.add(BookingMapper.toBookingDtoPut(bkg));
+                    bookings.add(BookingMapper.toBookingDto(bkg));
                 }
 
                 return sorted(bookings);
@@ -146,16 +146,16 @@ public class BookingService {
         }
     }
 
-    public List<BookingDtoPut> getAllBookingByOwner(Integer userId, String state) {
+    public List<BookingDto> getAllBookingByOwner(Integer userId, String state) {
         User owner = validSaveUser(userId);
         List<Item> items = itemRepository.findByOwnerEquals(owner);
-        List<BookingDtoPut> bookings = new ArrayList<>();
+        List<BookingDto> bookings = new ArrayList<>();
 
         switch (state) {
             case ("CURRENT") :
                 for (Item item : items) {
                     bookings.addAll(bookingRepository.findByItemEqualsOrderByStartDesc(item).stream()
-                            .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
+                            .map(BookingMapper::toBookingDto).collect(Collectors.toList()));
                 }
 
                 return sorted(bookings).stream()
@@ -165,7 +165,7 @@ public class BookingService {
             case ("FUTURE") :
                 for (Item item : items) {
                     bookings.addAll(bookingRepository.findByItemEqualsOrderByStartDesc(item).stream()
-                            .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
+                            .map(BookingMapper::toBookingDto).collect(Collectors.toList()));
                 }
 
                 return sorted(bookings).stream()
@@ -174,21 +174,21 @@ public class BookingService {
             case ("WAITING") :
                 for (Item item : items) {
                     bookings.addAll(bookingRepository.findByStatusAndItemEquals(BookingStatus.WAITING, item).stream()
-                            .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
+                            .map(BookingMapper::toBookingDto).collect(Collectors.toList()));
                 }
 
                 return sorted(bookings);
             case ("REJECTED") :
                 for (Item item : items) {
                     bookings.addAll(bookingRepository.findByStatusAndItemEquals(BookingStatus.REJECTED, item).stream()
-                            .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
+                            .map(BookingMapper::toBookingDto).collect(Collectors.toList()));
                 }
 
                 return sorted(bookings);
             case ("PAST") :
                 for (Item item : items) {
                     bookings.addAll(bookingRepository.findByItemEqualsOrderByStartDesc(item).stream()
-                            .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
+                            .map(BookingMapper::toBookingDto).collect(Collectors.toList()));
                 }
 
                 return sorted(bookings).stream()
@@ -197,7 +197,7 @@ public class BookingService {
             case ("ALL") :
                 for (Item item : items) {
                     bookings.addAll(bookingRepository.findByItemEqualsOrderByStartDesc(item).stream()
-                            .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
+                            .map(BookingMapper::toBookingDto).collect(Collectors.toList()));
                 }
 
                 return bookings;
@@ -248,7 +248,7 @@ public class BookingService {
         }
     }
 
-    private List<BookingDtoPut> sorted(List<BookingDtoPut> list) {
+    private List<BookingDto> sorted(List<BookingDto> list) {
         return list.stream().sorted((o1, o2) -> {
             if (o1.getEnd().isBefore(o2.getEnd())) {
                 return 1;
