@@ -59,7 +59,7 @@ public class BookingService {
 
         if (userId == booking.getItem().getOwner().getId()) {
             if (approved) {
-                if(booking.getStatus().equals(BookingStatus.APPROVED)) {
+                if (booking.getStatus().equals(BookingStatus.APPROVED)) {
                     throw new ApprovedException("Статус уже подтверждён");
                 }
 
@@ -67,7 +67,7 @@ public class BookingService {
                 bookingRepository.save(booking);
                 return BookingMapper.toBookingDtoPut(booking);
             } else {
-                if(booking.getStatus().equals(BookingStatus.REJECTED)) {
+                if (booking.getStatus().equals(BookingStatus.REJECTED)) {
                     throw new ApprovedException("Статус уже отклонён");
                 }
 
@@ -153,7 +153,7 @@ public class BookingService {
 
         switch (state) {
             case ("CURRENT") :
-                for(Item item : items) {
+                for (Item item : items) {
                     bookings.addAll(bookingRepository.findByItemEqualsOrderByStartDesc(item).stream()
                             .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
                 }
@@ -163,7 +163,7 @@ public class BookingService {
                         .filter((b1) -> b1.getEnd().isAfter(LocalDateTime.now()))
                         .collect(Collectors.toList());
             case ("FUTURE") :
-                for(Item item : items) {
+                for (Item item : items) {
                     bookings.addAll(bookingRepository.findByItemEqualsOrderByStartDesc(item).stream()
                             .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
                 }
@@ -172,21 +172,21 @@ public class BookingService {
                         .filter((b1) -> b1.getEnd().isAfter(LocalDateTime.now()))
                         .collect(Collectors.toList());
             case ("WAITING") :
-                for(Item item : items) {
+                for (Item item : items) {
                     bookings.addAll(bookingRepository.findByStatusAndItemEquals(BookingStatus.WAITING, item).stream()
                             .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
                 }
 
                 return sorted(bookings);
             case ("REJECTED") :
-                for(Item item : items) {
+                for (Item item : items) {
                     bookings.addAll(bookingRepository.findByStatusAndItemEquals(BookingStatus.REJECTED, item).stream()
                             .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
                 }
 
                 return sorted(bookings);
             case ("PAST") :
-                for(Item item : items) {
+                for (Item item : items) {
                     bookings.addAll(bookingRepository.findByItemEqualsOrderByStartDesc(item).stream()
                             .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
                 }
@@ -195,7 +195,7 @@ public class BookingService {
                         .filter(b1 -> b1.getEnd().isBefore(LocalDateTime.now()))
                         .collect(Collectors.toList());
             case ("ALL") :
-                for(Item item : items) {
+                for (Item item : items) {
                     bookings.addAll(bookingRepository.findByItemEqualsOrderByStartDesc(item).stream()
                             .map(BookingMapper::toBookingDtoPut).collect(Collectors.toList()));
                 }

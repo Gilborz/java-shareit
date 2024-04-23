@@ -110,7 +110,7 @@ public class ItemService {
         }
 
         if (bookings.size() == 1) {
-            if(bookings.get(0).getStatus().equals(BookingStatus.REJECTED)) {
+            if (bookings.get(0).getStatus().equals(BookingStatus.REJECTED)) {
                 itemDtoBooking.setLastBooking(null);
                 itemDtoBooking.setNextBooking(null);
                 itemDtoBooking.setComments(commentRepository.findByItemEquals(itemBd).stream()
