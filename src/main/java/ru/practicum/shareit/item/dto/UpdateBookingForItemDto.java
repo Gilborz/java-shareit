@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BookingDtoQueue {
+public class UpdateBookingForItemDto {
     private Integer id;
 
     private Integer bookerId;

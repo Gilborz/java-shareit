@@ -15,9 +15,9 @@ public class ItemDto {
 
     private Boolean available;
 
-    private BookingDtoQueue lastBooking;
+    private UpdateBookingForItemDto lastBooking;
 
-    private BookingDtoQueue nextBooking;
+    private UpdateBookingForItemDto nextBooking;
 
     private List<CommentDto> comments;
 
