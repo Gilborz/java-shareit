@@ -13,8 +13,8 @@ public class ItemMapper {
         );
     }
 
-    public static BookingDtoOwner toBookingDtoOwner(Booking booking) {
-        return new BookingDtoOwner(
+    public static BookingDtoQueue toBookingDtoOwner(Booking booking) {
+        return new BookingDtoQueue(
                 booking.getId(),
                 booking.getBooker().getId()
         );

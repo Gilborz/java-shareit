@@ -15,9 +15,9 @@ public class ItemDto {
 
     private Boolean available;
 
-    private BookingDtoOwner lastBooking;
+    private BookingDtoQueue lastBooking;
 
-    private BookingDtoOwner nextBooking;
+    private BookingDtoQueue nextBooking;
 
     private List<CommentDto> comments;
 

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BookingDtoOwner {
+public class BookingDtoQueue {
     private Integer id;
 
     private Integer bookerId;
