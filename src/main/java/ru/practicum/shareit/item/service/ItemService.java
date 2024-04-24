@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -120,7 +119,7 @@ public class ItemService {
                 log.info("Данные о предмете {} пользователя {} отправлены", itemId, userId);
                 return itemDtoBooking;
             }
-            itemDtoBooking.setLastBooking(BookingMapper.toBookingDtoOwner(bookings.get(0)));
+            itemDtoBooking.setLastBooking(ItemMapper.toBookingDtoOwner(bookings.get(0)));
             itemDtoBooking.setNextBooking(null);
             itemDtoBooking.setComments(commentRepository.findByItemEquals(itemBd).stream()
                     .map(CommentMapper::toCommentDto)
@@ -148,8 +147,8 @@ public class ItemService {
             }
         }).collect(Collectors.toList());
 
-        itemDtoBooking.setLastBooking(BookingMapper.toBookingDtoOwner(bookings.get(0)));
-        itemDtoBooking.setNextBooking(BookingMapper.toBookingDtoOwner(bookings.get(1)));
+        itemDtoBooking.setLastBooking(ItemMapper.toBookingDtoOwner(bookings.get(0)));
+        itemDtoBooking.setNextBooking(ItemMapper.toBookingDtoOwner(bookings.get(1)));
         itemDtoBooking.setComments(commentRepository.findByItemEquals(itemBd).stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList()));
@@ -176,8 +175,8 @@ public class ItemService {
                         .collect(Collectors.toList()));
                 itemsList.add(itemDtoBooking);
             } else {
-                itemDtoBooking.setLastBooking(BookingMapper.toBookingDtoOwner(bookings.get(0)));
-                itemDtoBooking.setNextBooking(BookingMapper.toBookingDtoOwner(bookings.get(1)));
+                itemDtoBooking.setLastBooking(ItemMapper.toBookingDtoOwner(bookings.get(0)));
+                itemDtoBooking.setNextBooking(ItemMapper.toBookingDtoOwner(bookings.get(1)));
                 itemDtoBooking.setComments(commentRepository.findByItemEquals(it).stream()
                         .map(CommentMapper::toCommentDto)
                         .collect(Collectors.toList()));

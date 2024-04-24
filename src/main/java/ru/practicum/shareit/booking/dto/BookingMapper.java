@@ -15,11 +15,4 @@ public class BookingMapper {
                 ItemMapper.toItemDto(booking.getItem())
         );
     }
-
-    public static BookingDtoOwner toBookingDtoOwner(Booking booking) {
-        return new BookingDtoOwner(
-                booking.getId(),
-                booking.getBooker().getId()
-        );
-    }
 }

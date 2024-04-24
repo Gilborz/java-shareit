@@ -2,7 +2,8 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.booking.dto.BookingDtoOwner;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingMapper;
 
 import java.util.List;
 
