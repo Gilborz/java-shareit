@@ -1,21 +1,28 @@
 package ru.practicum.shareit.booking.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
+import lombok.Getter;
+import lombok.Setter;
+import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.dto.UserDto;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingDto {
+    private Integer id;
+
     private LocalDateTime start;
 
     private LocalDateTime end;
 
-    private Item item;
+    private BookingStatus status;
 
-    private User booker;
+    private UserDto booker;
 
-    private String status;
+    private ItemDto item;
 }
